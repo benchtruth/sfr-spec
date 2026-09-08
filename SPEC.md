@@ -28,7 +28,7 @@ and must appear with, or link to, the measurement it describes.
 
 **If a requirement is not met, do not claim the level.** Claim the level below it and state what is missing. A partial claim is worth more than an inflated one, and it is the only kind that survives a reader checking it.
 
-### L1 — Reported
+### L1: Reported
 
 *You compute a silent failure rate from your own operational data and report it in a form that can be evaluated.*
 
@@ -42,7 +42,7 @@ L1 requires no test harness, no purchased subscriptions and no controlled experi
 6. **As-of date and window stated.** The report gives the date the figure was computed and the period it covers. A silent failure rate with no date attached is not conformant: platforms change, and an undated rate silently becomes a claim about a system that no longer exists.
 7. **Workload described.** The report says what was being measured: what the workflow does, how many steps it has, what triggers it, and how often it ran. An SFR is a property of a workload on a platform, never of a platform alone.
 
-### L2 — Measured
+### L2: Measured
 
 *L1, plus a controlled measurement rather than an observation of your own traffic.*
 
@@ -54,7 +54,7 @@ L2 is what an independent benchmark requires. It is reachable by anyone willing 
 11. **Method published.** Enough detail that a competent reader could re-run the measurement without asking you anything.
 12. **Per-run data available.** The record of individual runs is published, or provided on request. Aggregates alone cannot be audited.
 
-### L3 — Stress
+### L3: Stress
 
 *L2, plus the three edge behaviours that ordinary operation never exercises.*
 
