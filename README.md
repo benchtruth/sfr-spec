@@ -6,7 +6,7 @@ fails to complete it without telling anyone.
 **Status: draft, in progress.** Nothing here is stable until a `v1.0` tag exists.
 
 - [`SPEC.md`](SPEC.md) - the specification
-- `spec/sfr-v1.json` - machine-readable form (planned)
+- [`spec/sfr-v1.json`](spec/sfr-v1.json) - machine-readable form
 
 **Reference implementation: planned, not yet published.** This specification constrains
 how a measurement is made and reported. It does not require any particular software,

@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "specification": "SFR",
+  "version": "1.0",
+  "status": "draft",
+  "title": "Silent Failure Rate",
+  "description": "A metric for how often an automation platform accepts a unit of work, reports no problem, and does not complete it.",
+  "homepage": "https://benchtruth.com/spec",
+  "repository": "https://github.com/benchtruth/sfr-spec",
+  "license": {
+    "text": "CC-BY-4.0",
+    "code": "Apache-2.0"
+  },
+
+  "metric": {
+    "id": "sfr",
+    "name": "Silent Failure Rate",
+    "formula": "(missed + partial) / accepted_and_output_expected",
+    "range": [0, 1],
+    "numerator": {
+      "terms": ["missed", "partial"],
+      "definitions": {
+        "missed": "The platform accepted the event and nothing arrived at the destination.",
+        "partial": "The platform accepted the event and some, but not all, of the expected effects arrived."
+      }
+    },
+    "denominator": {
+      "term": "accepted_and_output_expected",
+      "definition": "Runs the platform accepted AND that the workload expected to produce output. Runs correctly stopped by a filter are excluded and reported separately."
+    },
+    "exclusions": [
+      {
+        "id": "rejected_at_send",
+        "definition": "The platform refused the event at the moment of delivery: a non-2xx status, a timeout, or a connection failure. No run was created.",
+        "excluded_from": ["numerator", "denominator"],
+        "must_be_reported_separately": true,
+        "rationale": "The sender learns immediately and can retry. This is the opposite property from the one the metric measures. Combining them yields a number that cannot distinguish a loud, recoverable failure from a hidden, unrecoverable one.",
+        "note": "This is the load-bearing rule of the metric."
+      },
+      {
+        "id": "stress_cohort",
+        "definition": "Events fired by an edge probe (destination outage, success-wrapped failure, sustained load).",
+        "excluded_from": ["numerator", "denominator"],
+        "must_be_reported_separately": true,
+        "rationale": "A stress test must not share a denominator with normal operation, or the headline rate stops describing normal operation."
+      }
+    ],
+    "interval": {
+      "method": "wilson",
+      "confidence": 0.95,
+      "required": true,
+      "bare_zero_forbidden": true,
+      "rationale": "Zero failures in 40 runs and zero in 4,000 are different claims. Publishing both as 0% misleads by omission."
+    },
+    "required_qualifiers": ["denominator", "interval", "as_of_date", "window", "workload"],
+    "not_equivalent_to": ["uptime", "platform_error_rate", "availability"]
+  },
+
+  "classifications": [
+    { "id": "success",          "condition": "receipts == expected",                        "counts_toward": null },
+    { "id": "missed",           "condition": "receipts == 0 && accepted",                   "counts_toward": "numerator" },
+    { "id": "partial",          "condition": "0 < receipts < expected",                     "counts_toward": "numerator" },
+    { "id": "duplicate",        "condition": "receipts > expected",                         "counts_toward": null },
+    { "id": "rejected_at_send", "condition": "receipts == 0 && !accepted",                  "counts_toward": "excluded" },
+    { "id": "filtered",         "condition": "receipts == 0 && expected == 0",              "counts_toward": null },
+    { "id": "filter_leak",      "condition": "receipts > 0 && expected == 0",               "counts_toward": null }
+  ],
+
+  "workloads": [
+    { "id": "WF1", "trigger": "webhook", "steps": ["http_post"],                                  "expected_receipts": 1, "isolates": "baseline cost, latency and loss" },
+    { "id": "WF2", "trigger": "webhook", "steps": ["filter", "http_post", "http_post"],           "expected_receipts": "2 when pass, 0 when not", "isolates": "filter billing and filter correctness" },
+    { "id": "WF3", "trigger": "schedule", "steps": ["http_get", "filter", "http_post"],           "expected_receipts": "1 per poll finding a new item, 0 for an empty poll", "isolates": "empty-poll cost and scheduler punctuality" },
+    { "id": "WF4", "trigger": "webhook", "steps": ["branch", "http_post", "http_post"],           "expected_receipts": 2, "isolates": "branch billing and partial failure" }
+  ],
+
+  "conformance": {
+    "self_declared": true,
+    "certifying_body": null,
+    "audited": false,
+    "claim_format": "SFR-conformant (L{level}), SFR v{version}",
+    "claim_applies_to": "a published measurement, not an organisation",
+    "partial_claim_rule": "If a requirement is not met, claim the level below and state what is missing.",
+    "levels": [
+      {
+        "id": "L1",
+        "name": "Reported",
+        "summary": "An SFR computed from your own operational data and reported so it can be evaluated.",
+        "requires_harness": false,
+        "requires": [
+          "per_event_identity",
+          "destination_side_verification",
+          "send_outcome_exclusion",
+          "denominator_stated",
+          "interval_stated_no_bare_zero",
+          "as_of_date_and_window",
+          "workload_described"
+        ]
+      },
+      {
+        "id": "L2",
+        "name": "Measured",
+        "summary": "A controlled measurement rather than an observation of your own traffic.",
+        "includes": "L1",
+        "requires": [
+          "independent_trigger",
+          "both_endpoints_controlled",
+          "reference_workloads_or_documented_subset",
+          "method_published",
+          "per_run_data_available"
+        ]
+      },
+      {
+        "id": "L3",
+        "name": "Stress",
+        "summary": "L2 plus the three edge behaviours ordinary operation never exercises.",
+        "includes": "L2",
+        "requires": [
+          "destination_outage_probe",
+          "success_wrapped_failure_probe",
+          "sustained_load_probe"
+        ],
+        "note": "Each probe must be published including when its result is that nothing interesting happened."
+      }
+    ]
+  },
+
+  "data_contract": {
+    "event": {
+      "required": ["run_id", "wf", "platform", "seq", "fired_at"],
+      "run_id": "unique per event, preserved unchanged to the destination"
+    },
+    "receipt": {
+      "required": ["run_id", "wf", "platform", "step", "fired_at"],
+      "added_by_destination": ["received_at"]
+    },
+    "send_outcome": {
+      "required": true,
+      "fields": ["accepted", "reason"],
+      "note": "Recording that a send failed without recording why makes connection reset, timeout and non-2xx indistinguishable, and the distinction is unrecoverable after the fact."
+    },
+    "latency": {
+      "definition": "received_at - fired_at",
+      "includes": ["platform processing", "both network legs"],
+      "note": "Not the platform's internal execution time; do not compare with a figure that is."
+    }
+  }
+}
