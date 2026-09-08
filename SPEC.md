@@ -188,7 +188,63 @@ Publish all seven counts. The rate is only the middle two over the denominator, 
 
 ## 5. Statistical requirements
 
-*In progress.*
+Silent failure rates are small. That is the whole difficulty: at rates near zero, the numbers most people reach for are wrong in ways that flatter whoever is reporting them.
+
+### The interval is not optional
+
+**Every rate is published with a Wilson score interval at 95% confidence.**
+
+The interval is required because the point estimate alone does not distinguish between claims of very different strength. Zero failures in 40 runs and zero failures in 4,000 runs are both "0%", and they are not the same finding: the first is consistent with a true rate of 7%, the second is not.
+
+Use the Wilson score interval, not the normal approximation. The normal interval (`p ± z·sqrt(p(1-p)/n)`) collapses to zero width when no failures are observed, which is exactly the case this metric spends most of its time in. An interval that reports `0% ± 0%` from 40 runs is not conservative, it is wrong.
+
+For `k` failures in `n` runs at `z = 1.96`:
+
+```
+        p + z²/2n            z·sqrt( p(1-p)/n + z²/4n² )
+centre = ───────────   half-width = ──────────────────────────
+         1 + z²/n                        1 + z²/n
+
+where p = k/n, and the interval is [centre - half-width, centre + half-width]
+clamped to [0, 1].
+```
+
+### A bare zero may not be published
+
+**A rate of 0% must always appear with its upper bound and its denominator.** Not in a footnote, not on a linked methodology page: in the same sentence, wherever the number appears.
+
+This is the single rule most often broken, including by people acting in good faith, and it is the rule that makes a zero honest. "We observed no silent failures" is a finding. "0%" alone is a marketing claim wearing a finding's clothes.
+
+The conformant forms are:
+
+> 0 silent failures in 840 runs (0%, 95% CI 0 to 0.46%), as of 2026-09-08
+
+or, where a rate is quoted in running text:
+
+> no silent failures observed in 840 runs, an upper bound of 0.46% at 95% confidence
+
+### Minimum evidence
+
+There is no minimum sample size, because there is no sample size at which a rate becomes true. There is only the interval, which states how much the evidence supports. **Report any `n` you like, with its interval, and let the reader judge.**
+
+What is forbidden is reporting a rate whose interval you did not compute, or computing it and not showing it.
+
+Two consequences worth stating, because they surprise people:
+
+- **A wider interval is not a worse platform.** If two platforms both show zero failures and one has a wider bound, the difference is how much evidence exists, not how often each failed. Reports must not present interval width as a quality difference, and must state this explicitly where the samples are unequal.
+- **Zero is not a floor you converge to.** Accumulating runs tightens the bound; it never proves the rate is zero. A report that describes its own zero as "proven" or "confirmed" is not conformant.
+
+### Comparing platforms
+
+When comparing, compare intervals, not point estimates. Two platforms whose intervals overlap have not been shown to differ, however different their point estimates look.
+
+State sample sizes next to every comparison. A comparison of an 8,000-run figure with a 400-run figure is legitimate and is also not a like-for-like ranking, and the report must not present it as one.
+
+### Latency
+
+Where latency is reported alongside SFR, report percentiles, not means. Give at least the median and the 95th, and state what the measurement spans. A mean latency over a distribution with a long tail describes no actual request.
+
+Percentiles are computed on the measured values without interpolation: the value at index `ceil(q·n) - 1` of the sorted list. State the method, because implementations differ and a p99 computed two ways can differ materially at small `n`.
 
 ---
 

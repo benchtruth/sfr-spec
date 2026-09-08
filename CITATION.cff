@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: "SFR: Silent Failure Rate"
+message: "If you use this specification, or claim conformance to it, please cite it as below."
+type: software
+abstract: >-
+  A specification for measuring how often an automation platform accepts a unit
+  of work, reports no problem, and does not complete it. Defines the metric, the
+  exclusion of failures refused at send, reference workloads, a data contract for
+  per-event reconciliation, statistical reporting requirements, and three
+  self-declared conformance levels.
+authors:
+  - given-names: Hao
+    family-names: Xu
+    affiliation: BenchTruth
+    city: Sydney
+    country: AU
+repository-code: "https://github.com/benchtruth/sfr-spec"
+url: "https://benchtruth.com/spec"
+license: CC-BY-4.0
+version: "1.0"
+keywords:
+  - silent failure rate
+  - automation
+  - workflow automation
+  - reliability
+  - benchmarking
+  - webhooks
+  - measurement specification
