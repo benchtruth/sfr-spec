@@ -11,14 +11,19 @@
     "text": "CC-BY-4.0",
     "code": "Apache-2.0"
   },
-
   "metric": {
     "id": "sfr",
     "name": "Silent Failure Rate",
     "formula": "(missed + partial) / accepted_and_output_expected",
-    "range": [0, 1],
+    "range": [
+      0,
+      1
+    ],
     "numerator": {
-      "terms": ["missed", "partial"],
+      "terms": [
+        "missed",
+        "partial"
+      ],
       "definitions": {
         "missed": "The platform accepted the event and nothing arrived at the destination.",
         "partial": "The platform accepted the event and some, but not all, of the expected effects arrived."
@@ -32,7 +37,10 @@
       {
         "id": "rejected_at_send",
         "definition": "The platform refused the event at the moment of delivery: a non-2xx status, a timeout, or a connection failure. No run was created.",
-        "excluded_from": ["numerator", "denominator"],
+        "excluded_from": [
+          "numerator",
+          "denominator"
+        ],
         "must_be_reported_separately": true,
         "rationale": "The sender learns immediately and can retry. This is the opposite property from the one the metric measures. Combining them yields a number that cannot distinguish a loud, recoverable failure from a hidden, unrecoverable one.",
         "note": "This is the load-bearing rule of the metric."
@@ -40,7 +48,10 @@
       {
         "id": "stress_cohort",
         "definition": "Events fired by an edge probe (destination outage, success-wrapped failure, sustained load).",
-        "excluded_from": ["numerator", "denominator"],
+        "excluded_from": [
+          "numerator",
+          "denominator"
+        ],
         "must_be_reported_separately": true,
         "rationale": "A stress test must not share a denominator with normal operation, or the headline rate stops describing normal operation."
       }
@@ -52,27 +63,100 @@
       "bare_zero_forbidden": true,
       "rationale": "Zero failures in 40 runs and zero in 4,000 are different claims. Publishing both as 0% misleads by omission."
     },
-    "required_qualifiers": ["denominator", "interval", "as_of_date", "window", "workload"],
-    "not_equivalent_to": ["uptime", "platform_error_rate", "availability"]
+    "required_qualifiers": [
+      "denominator",
+      "interval",
+      "as_of_date",
+      "window",
+      "workload"
+    ],
+    "not_equivalent_to": [
+      "uptime",
+      "platform_error_rate",
+      "availability"
+    ]
   },
-
   "classifications": [
-    { "id": "success",          "condition": "receipts == expected",                        "counts_toward": null },
-    { "id": "missed",           "condition": "receipts == 0 && accepted",                   "counts_toward": "numerator" },
-    { "id": "partial",          "condition": "0 < receipts < expected",                     "counts_toward": "numerator" },
-    { "id": "duplicate",        "condition": "receipts > expected",                         "counts_toward": null },
-    { "id": "rejected_at_send", "condition": "receipts == 0 && !accepted",                  "counts_toward": "excluded" },
-    { "id": "filtered",         "condition": "receipts == 0 && expected == 0",              "counts_toward": null },
-    { "id": "filter_leak",      "condition": "receipts > 0 && expected == 0",               "counts_toward": null }
+    {
+      "id": "success",
+      "condition": "receipts == expected",
+      "counts_toward": null
+    },
+    {
+      "id": "missed",
+      "condition": "receipts == 0 && accepted",
+      "counts_toward": "numerator"
+    },
+    {
+      "id": "partial",
+      "condition": "0 < receipts < expected",
+      "counts_toward": "numerator"
+    },
+    {
+      "id": "duplicate",
+      "condition": "receipts > expected",
+      "counts_toward": null
+    },
+    {
+      "id": "rejected_at_send",
+      "condition": "receipts == 0 && !accepted",
+      "counts_toward": "excluded"
+    },
+    {
+      "id": "filtered",
+      "condition": "receipts == 0 && expected == 0",
+      "counts_toward": null
+    },
+    {
+      "id": "filter_leak",
+      "condition": "receipts > 0 && expected == 0",
+      "counts_toward": null
+    }
   ],
-
   "workloads": [
-    { "id": "WF1", "trigger": "webhook", "steps": ["http_post"],                                  "expected_receipts": 1, "isolates": "baseline cost, latency and loss" },
-    { "id": "WF2", "trigger": "webhook", "steps": ["filter", "http_post", "http_post"],           "expected_receipts": "2 when pass, 0 when not", "isolates": "filter billing and filter correctness" },
-    { "id": "WF3", "trigger": "schedule", "steps": ["http_get", "filter", "http_post"],           "expected_receipts": "1 per poll finding a new item, 0 for an empty poll", "isolates": "empty-poll cost and scheduler punctuality" },
-    { "id": "WF4", "trigger": "webhook", "steps": ["branch", "http_post", "http_post"],           "expected_receipts": 2, "isolates": "branch billing and partial failure" }
+    {
+      "id": "WF1",
+      "trigger": "webhook",
+      "steps": [
+        "http_post"
+      ],
+      "expected_receipts": 1,
+      "isolates": "baseline cost, latency and loss"
+    },
+    {
+      "id": "WF2",
+      "trigger": "webhook",
+      "steps": [
+        "filter",
+        "http_post",
+        "http_post"
+      ],
+      "expected_receipts": "2 when pass, 0 when not",
+      "isolates": "filter billing and filter correctness"
+    },
+    {
+      "id": "WF3",
+      "trigger": "schedule",
+      "steps": [
+        "http_get",
+        "filter",
+        "http_post"
+      ],
+      "expected_receipts": "1 per poll finding a new item, 0 for an empty poll",
+      "isolates": "empty-poll cost and scheduler punctuality"
+    },
+    {
+      "id": "WF4",
+      "trigger": "webhook",
+      "steps": [
+        "branch",
+        "http_post",
+        "http_post"
+      ],
+      "expected_receipts": 2,
+      "isolates": "branch billing and partial failure"
+    }
   ],
-
   "conformance": {
     "self_declared": true,
     "certifying_body": null,
@@ -123,25 +207,85 @@
       }
     ]
   },
-
   "data_contract": {
     "event": {
-      "required": ["run_id", "wf", "platform", "seq", "fired_at"],
+      "required": [
+        "run_id",
+        "wf",
+        "platform",
+        "seq",
+        "fired_at"
+      ],
       "run_id": "unique per event, preserved unchanged to the destination"
     },
     "receipt": {
-      "required": ["run_id", "wf", "platform", "step", "fired_at"],
-      "added_by_destination": ["received_at"]
+      "required": [
+        "run_id",
+        "wf",
+        "platform",
+        "step",
+        "fired_at"
+      ],
+      "added_by_destination": [
+        "received_at"
+      ]
     },
     "send_outcome": {
       "required": true,
-      "fields": ["accepted", "reason"],
+      "fields": [
+        "accepted",
+        "reason"
+      ],
       "note": "Recording that a send failed without recording why makes connection reset, timeout and non-2xx indistinguishable, and the distinction is unrecoverable after the fact."
     },
     "latency": {
       "definition": "received_at - fired_at",
-      "includes": ["platform processing", "both network legs"],
+      "includes": [
+        "platform processing",
+        "both network legs"
+      ],
       "note": "Not the platform's internal execution time; do not compare with a figure that is."
+    }
+  },
+  "reporting": {
+    "qualifiers_travel_with_number": {
+      "required": [
+        "denominator",
+        "interval",
+        "as_of_date",
+        "workload"
+      ],
+      "placement": "same sentence as the rate, wherever the rate appears",
+      "rationale": "Extraction drops whatever is not adjacent to the number."
+    },
+    "dating": {
+      "as_of_date": "required at every level",
+      "window": "stated as dates, not as 'recent' or a year",
+      "maintenance_status": "state whether the figure is refreshed (and how often) or is a one-off snapshot that will not be updated"
+    },
+    "publish_alongside": [
+      "all seven classification counts",
+      "denominator construction",
+      "rejected_at_send count",
+      "per-run data (L2 and above)"
+    ],
+    "quotation": {
+      "note": "Quoting an SFR makes you a publisher of it.",
+      "rules": [
+        "carry the original's qualifiers",
+        "carry the original's as-of date, not the date of quotation",
+        "do not aggregate rates across workloads, platforms or windows",
+        "do not place a measured rate beside rates without denominators unless the difference is marked"
+      ]
+    },
+    "corrections": {
+      "additive": true,
+      "rule": "Publish the correction where the figure appeared, with its own date, and leave the prior record standing. Do not silently edit."
+    },
+    "reserved": {
+      "id": "6.6",
+      "title": "Reporting a result that contradicts the prevailing claim",
+      "status": "reserved, to be added by erratum once the supporting evidence is complete"
     }
   }
 }

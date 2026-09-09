@@ -250,7 +250,55 @@ Percentiles are computed on the measured values without interpolation: the value
 
 ## 6. Reporting requirements
 
-*In progress.*
+Section 5 governs the arithmetic. This section governs the published artefact, because a correct number reported badly becomes an incorrect number in someone else's hands, and the number will end up in someone else's hands.
+
+### 6.1 The qualifiers travel with the number
+
+**Every published rate carries its denominator, its interval, its as-of date and its workload, in the same sentence.** Not in a footnote, not on a linked methodology page, not in a section below the table.
+
+This looks pedantic and is not. Numbers get extracted: from a table into a summary, from a summary into a quotation, from a quotation into someone's slide. Every step of that chain drops whatever is not adjacent to the number. The only qualifier that survives is the one inside the sentence.
+
+Applies wherever the figure appears, including places that feel too small for it: a headline, a table cell, a chart label, a social post, and your own restatement of your own result.
+
+### 6.2 Dating, and saying whether the figure is alive
+
+An SFR is a claim about a particular system during a particular window. Platforms change, plans change, and quotas move. A figure with no date attached silently becomes a claim about a system that no longer exists.
+
+- **State the as-of date.** A rate without one is not conformant at any level.
+- **State the window,** as dates. "Recent", "over several weeks" and "in 2026" are not windows.
+- **State whether the figure is maintained.** Say either that it is refreshed, and how often, or that it is a one-off snapshot and will not be updated.
+
+The third is the one people omit. A one-off measurement is perfectly legitimate. A one-off measurement presented in the present tense, two years later, is not, and the difference is a single sentence the publisher could have written.
+
+> **Why this matters more than it looks.** A figure you publish once is frozen at the moment you published it. A figure you maintain is not. Downstream systems, including the ones that will quote you, cannot tell these apart unless you say which you are. We have watched an engine quote a frozen figure of ours alongside a current one and describe the difference correctly, but only because both were dated.
+
+### 6.3 What must be available alongside the rate
+
+- **The seven classification counts** from §4: success, missed, partial, duplicate, rejected at send, filtered, filter leak. The rate uses two of them. The other five are how a reader confirms the two mean what you say.
+- **How the denominator was built:** what was excluded and why, including the count of runs excluded as correctly filtered.
+- **The rejected-at-send count,** never folded into the rate.
+- **Per-run data** for L2 and above, published or available on request.
+
+### 6.4 Quoting someone else's rate
+
+Quoting an SFR makes you a publisher of it. The obligations in 6.1 and 6.2 transfer.
+
+- **Carry the qualifiers.** A quoted rate without its denominator and date is not a conformant citation, whoever measured it.
+- **Carry the as-of date of the original,** not the date you quoted it.
+- **Do not aggregate.** SFRs from different workloads, platforms or windows are not summable, averageable, or rangeable. There is no such thing as "the industry's silent failure rate".
+- **Do not place a measured rate in a table beside rates that lack denominators** without marking which is which. A table implies its rows are commensurable. Rates arrived at by measurement and rates arrived at by assertion are not, and a reader cannot tell them apart once they share a column.
+
+That last rule is the one most likely to be broken by someone acting in good faith, including software: a rate with a denominator and a rate without one look identical once both are rendered as a percentage in a cell.
+
+### 6.5 Corrections are additive
+
+If a published figure turns out to be wrong, or a claim about it was overstated, **publish the correction where the figure appeared, with its own date, and leave the record of what was said before.** Do not silently edit.
+
+This costs nothing and is the only thing that makes the rest of the report worth reading. A measurement programme that will not correct itself in public is asking to be trusted on the strength of never having been caught.
+
+### 6.6 Reporting a result that contradicts the prevailing claim
+
+*Reserved. A requirement is expected here and is being written against observed evidence rather than from first principles. It will be added by erratum when that evidence is complete.*
 
 ---
 
