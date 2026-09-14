@@ -3,7 +3,7 @@
 A specification for measuring how often an automation platform accepts work and then
 fails to complete it without telling anyone.
 
-**Status: draft, in progress.** Nothing here is stable until a `v1.0` tag exists.
+**Version 1.0**, released 2026-09-14. Stable: published text is not edited in place, only appended to.
 
 - [`SPEC.md`](SPEC.md) - the specification
 - [`spec/sfr-v1.json`](spec/sfr-v1.json) - machine-readable form

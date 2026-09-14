@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "specification": "SFR",
   "version": "1.0",
-  "status": "draft",
+  "status": "stable",
   "title": "Silent Failure Rate",
   "description": "A metric for how often an automation platform accepts a unit of work, reports no problem, and does not complete it.",
   "homepage": "https://benchtruth.com/spec",
@@ -287,5 +287,6 @@
       "title": "Reporting a result that contradicts the prevailing claim",
       "status": "reserved, to be added by erratum once the supporting evidence is complete"
     }
-  }
+  },
+  "released": "2026-09-14"
 }

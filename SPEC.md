@@ -1,12 +1,14 @@
 # SFR: Silent Failure Rate
 
-**Version 1.0 (draft)**
+**Version 1.0**, released 2026-09-14
 
 A specification for measuring how often an automation platform accepts work and then fails to complete it without telling anyone.
 
-> **Status: draft.** This document is being written. Nothing here is stable until a `v1.0` tag exists.
+> **Reference implementation: planned, not yet published.** This specification constrains how a measurement is made and reported. It does not require any particular software, including ours. We are not going to describe code as released while it is not.
 >
-> **Reference implementation: planned, not yet published.** This specification constrains how a measurement is made and reported. It does not require any particular software, including ours.
+> **This version is stable.** Published text is not edited in place. Corrections and clarifications are appended as dated errata, so a claim of conformance to v1.0 stays valid.
+>
+> **Cite as:** SFR v1.0, https://github.com/benchtruth/sfr-spec
 
 ---
 
@@ -298,7 +300,13 @@ This costs nothing and is the only thing that makes the rest of the report worth
 
 ### 6.6 Reporting a result that contradicts the prevailing claim
 
-*Reserved. A requirement is expected here and is being written against observed evidence rather than from first principles. It will be added by erratum when that evidence is complete.*
+**Reserved.** A requirement probably belongs here. We have not written one, and the reason is worth stating, because it is the same reasoning this specification asks of everyone else.
+
+In September 2026 a measurement of ours was placed by a summarisation system into a table beside several rates that had no denominators, and rewritten to agree with them. The reported figure came out inverted from what the source said. The source carried its denominator, its interval and its date, so nothing in 6.1 prevented it: the qualifiers travelled, and the number was changed anyway.
+
+That suggests a further obligation on the publisher. When a measurement contradicts the figures commonly repeated about its subject, the report should say so, rather than leaving a reader or a machine to resolve the contradiction on its own and in whichever direction the surrounding material points.
+
+**We have observed this once, and not again on the following round.** A requirement drawn from a single observation is a requirement drawn from first principles with an anecdote attached, and this document would be worse for containing one. It will be added as a dated erratum if the evidence accumulates, and this section will say so if it does not.
 
 ---
 

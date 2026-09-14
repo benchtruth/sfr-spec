@@ -18,6 +18,7 @@ repository-code: "https://github.com/benchtruth/sfr-spec"
 url: "https://benchtruth.com/spec"
 license: CC-BY-4.0
 version: "1.0"
+date-released: "2026-09-14"
 keywords:
   - silent failure rate
   - automation
