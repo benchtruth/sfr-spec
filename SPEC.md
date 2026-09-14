@@ -68,8 +68,6 @@ Platforms evaluate step success on the transport status by design, so these are 
 
 ---
 
----
-
 ## 2. Fairness rules
 
 These constrain the comparison, not the platform. Break any one of them and the resulting numbers describe your setup rather than the platforms.
@@ -90,7 +88,7 @@ These constrain the comparison, not the platform. Break any one of them and the 
 
 Four workloads. Each exists to isolate one thing that platform pricing pages and status pages do not tell you. A measurement may use a subset, but must name the omissions, because the workloads are not interchangeable: they fail in different ways on purpose.
 
-Every workload posts to a destination the measurer controls. That is not a convenience, it is rule 9 of L2: a third-party destination makes platform failures and destination failures indistinguishable.
+Every workload posts to a destination the measurer controls. That is not a convenience. A third-party destination makes platform failures and destination failures indistinguishable, so the resulting number measures the pair rather than the platform. §7 requires it at L2 and above.
 
 ### WF1: webhook to a single action
 
@@ -219,7 +217,7 @@ This is the single rule most often broken, including by people acting in good fa
 
 The conformant forms are:
 
-> 0 silent failures in 840 runs (0%, 95% CI 0 to 0.46%), as of 2026-09-08
+> 0 silent failures in 840 runs (0%, 95% CI 0 to 0.46%), as of 2026-09-14
 
 or, where a rate is quoted in running text:
 
